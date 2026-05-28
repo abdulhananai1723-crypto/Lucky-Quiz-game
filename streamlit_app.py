@@ -1,48 +1,41 @@
 import streamlit as st
+import random
 import time
+import pandas as pd
+from fpdf import FPDF
+import os
 
 st.set_page_config(page_title="Lucky Quiz Game", page_icon="🎯")
 
 # ---------------- QUESTIONS ---------------- #
 
-easy_questions = [
-    {"q": "What is the plural of 'child'?", "options": ["Childs", "Children", "Childes", "Child"], "ans": "Children"},
-    {"q": "Water freezes at?", "options": ["0°C", "10°C", "50°C", "100°C"], "ans": "0°C"},
-    {"q": "Which gas do we breathe in?", "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], "ans": "Oxygen"},
-    {"q": "Which planet is known as Red Planet?", "options": ["Earth", "Mars", "Jupiter", "Venus"], "ans": "Mars"},
-    {"q": "Opposite of 'day'?", "options": ["Light", "Night", "Morning", "Sun"], "ans": "Night"},
-    {"q": "Human body has how many eyes?", "options": ["1", "2", "3", "4"], "ans": "2"},
-    {"q": "Fill in the blank: She ___ playing.", "options": ["am", "are", "is", "be"], "ans": "is"},
-    {"q": "Past tense of go?", "options": ["goed", "went", "gone", "going"], "ans": "went"},
-    {"q": "Plural of book?", "options": ["Bookes", "Books", "Bookies", "Book"], "ans": "Books"},
-    {"q": "Opposite of hot?", "options": ["Warm", "Cold", "Heat", "Cooler"], "ans": "Cold"},
-]
+questions_data = {
+    "English": [
+        {"q": "Plural of child?", "options": ["Childs", "Children", "Childes", "Child"], "ans": "Children"},
+        {"q": "Past tense of go?", "options": ["goed", "went", "gone", "going"], "ans": "went"},
+        {"q": "Opposite of hot?", "options": ["Warm", "Cold", "Heat", "Cooler"], "ans": "Cold"},
+    ],
 
-medium_questions = [
-    {"q": "Which organ pumps blood?", "options": ["Lungs", "Brain", "Heart", "Kidney"], "ans": "Heart"},
-    {"q": "Square root of 81?", "options": ["7", "8", "9", "10"], "ans": "9"},
-    {"q": "Synonym of 'happy'?", "options": ["Sad", "Angry", "Glad", "Weak"], "ans": "Glad"},
-    {"q": "Which gas do plants absorb?", "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], "ans": "Carbon Dioxide"},
-    {"q": "Earth is a?", "options": ["Star", "Planet", "Moon", "Comet"], "ans": "Planet"},
-    {"q": "Boiling point of water?", "options": ["50°C", "100°C", "150°C", "200°C"], "ans": "100°C"},
-    {"q": "Correct sentence: He go to school.", "options": ["He goes to school.", "He go school.", "He going school.", "He gone school."], "ans": "He goes to school."},
-    {"q": "Fill in the blank: They ___ going.", "options": ["is", "am", "are", "was"], "ans": "are"},
-    {"q": "Identify noun: Ali reads a book.", "options": ["reads", "Ali and book", "a", "reads a"], "ans": "Ali and book"},
-    {"q": "Past tense: He plays cricket.", "options": ["He played cricket.", "He play cricket.", "He playing cricket.", "He plays cricket."], "ans": "He played cricket."},
-]
+    "Science": [
+        {"q": "Water freezes at?", "options": ["0°C", "10°C", "50°C", "100°C"], "ans": "0°C"},
+        {"q": "Which gas do we breathe in?", "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], "ans": "Oxygen"},
+        {"q": "Chemical formula of water?", "options": ["CO2", "H2O", "O2", "NaCl"], "ans": "H2O"},
+    ],
 
-hard_questions = [
-    {"q": "Speed of light is?", "options": ["3×10^8 m/s", "3×10^6", "3×10^5", "3×10^7"], "ans": "3×10^8 m/s"},
-    {"q": "Vitamin from sunlight?", "options": ["A", "B", "C", "D"], "ans": "D"},
-    {"q": "Unit of force?", "options": ["Joule", "Newton", "Watt", "Volt"], "ans": "Newton"},
-    {"q": "Chemical formula of water?", "options": ["CO2", "H2O", "O2", "NaCl"], "ans": "H2O"},
-    {"q": "Which organ controls body?", "options": ["Heart", "Brain", "Lungs", "Kidney"], "ans": "Brain"},
-    {"q": "Passive: Ali writes a letter.", "options": ["A letter is written by Ali.", "A letter was written by Ali.", "Ali is written by a letter.", "A letter writes Ali."], "ans": "A letter is written by Ali."},
-    {"q": "Indirect: He said, I am ill.", "options": ["He said that he was ill.", "He said that he is ill.", "He said I am ill.", "He says he was ill."], "ans": "He said that he was ill."},
-    {"q": "Tense: She has completed work.", "options": ["Past", "Present Perfect", "Future", "Continuous"], "ans": "Present Perfect"},
-    {"q": "Correct sentence?", "options": ["Neither Ali nor his friends are present.", "Neither Ali nor his friends is present.", "Neither Ali nor his friends am present.", "No correction"], "ans": "Neither Ali nor his friends are present."},
-    {"q": "Interrogative: He is reading.", "options": ["Is he reading?", "He is reading?", "Does he reading?", "Was he read?"], "ans": "Is he reading?"},
-]
+    "Math": [
+        {"q": "Square root of 81?", "options": ["7", "8", "9", "10"], "ans": "9"},
+        {"q": "10 + 5 = ?", "options": ["12", "15", "18", "20"], "ans": "15"},
+        {"q": "5 × 6 = ?", "options": ["20", "25", "30", "35"], "ans": "30"},
+    ]
+}
+
+# ---------------- FILES ---------------- #
+
+LEADERBOARD_FILE = "leaderboard.csv"
+
+if not os.path.exists(LEADERBOARD_FILE):
+    df = pd.DataFrame(columns=["Name", "Subject", "Score"])
+    df.to_csv(LEADERBOARD_FILE, index=False)
 
 # ---------------- SESSION ---------------- #
 
@@ -50,64 +43,194 @@ if "started" not in st.session_state:
     st.session_state.started = False
     st.session_state.q_no = 0
     st.session_state.score = 0
-    st.session_state.level = ""
     st.session_state.feedback = ""
+    st.session_state.questions = []
+    st.session_state.start_time = time.time()
 
-# ---------------- UI ---------------- #
+# ---------------- TITLE ---------------- #
 
 st.title("🎯 Lucky Quiz Game")
 
-name = st.text_input("Enter your name:")
-level = st.selectbox("Select Level", ["Easy", "Medium", "Hard"])
+# ---------------- USER INFO ---------------- #
+
+name = st.text_input("Enter Your Name")
+
+subject = st.selectbox(
+    "Select Subject",
+    list(questions_data.keys())
+)
+
+# ---------------- START BUTTON ---------------- #
 
 if st.button("Start Quiz"):
+
     st.session_state.started = True
     st.session_state.q_no = 0
     st.session_state.score = 0
-    st.session_state.level = level
     st.session_state.feedback = ""
 
-# ---------------- GAME ---------------- #
+    # Random Questions
+    st.session_state.questions = random.sample(
+        questions_data[subject],
+        len(questions_data[subject])
+    )
+
+    st.session_state.subject = subject
+    st.session_state.start_time = time.time()
+
+# ---------------- QUIZ ---------------- #
 
 if st.session_state.started:
 
-    if st.session_state.level == "Easy":
-        questions = easy_questions
-    elif st.session_state.level == "Medium":
-        questions = medium_questions
-    else:
-        questions = hard_questions
+    questions = st.session_state.questions
 
-    # Show feedback
-    if st.session_state.feedback:
-        st.success(st.session_state.feedback)
+    # TIMER
+    total_time = 60
+    elapsed = int(time.time() - st.session_state.start_time)
+    remaining = total_time - elapsed
 
-    if st.session_state.q_no < len(questions):
+    st.warning(f"⏳ Time Left: {remaining} seconds")
+
+    if remaining <= 0:
+        st.error("⏰ Time Over!")
+        st.session_state.started = False
+
+    elif st.session_state.q_no < len(questions):
 
         q = questions[st.session_state.q_no]
 
-        st.subheader(f"Q{st.session_state.q_no + 1}: {q['q']}")
+        st.subheader(
+            f"Q{st.session_state.q_no + 1}: {q['q']}"
+        )
 
-        selected = st.radio("Choose:", q["options"], key=st.session_state.q_no)
+        selected = st.radio(
+            "Choose Answer:",
+            q["options"],
+            key=st.session_state.q_no
+        )
 
-        if st.button("Submit"):
+        if st.button("Submit Answer"):
 
             if selected == q["ans"]:
                 st.session_state.score += 1
-                st.session_state.feedback = "🎉 Congratulations! Correct Answer!"
+                st.session_state.feedback = "✅ Correct!"
             else:
-                st.session_state.feedback = f"❌ Wrong! Correct answer is: {q['ans']}"
+                st.session_state.feedback = (
+                    f"❌ Wrong! Correct Answer: {q['ans']}"
+                )
 
             st.session_state.q_no += 1
-            time.sleep(1)
             st.rerun()
 
-    else:
-        st.success(f"{name}, Your Score: {st.session_state.score}/{len(questions)} 🎉")
+        if st.session_state.feedback:
+            st.success(st.session_state.feedback)
 
-        if st.button("Restart"):
+    else:
+
+        score = st.session_state.score
+        total = len(questions)
+
+        st.success(
+            f"🎉 {name}, Your Score: {score}/{total}"
+        )
+
+        # ---------------- SAVE LEADERBOARD ---------------- #
+
+        df = pd.read_csv(LEADERBOARD_FILE)
+
+        new_row = {
+            "Name": name,
+            "Subject": st.session_state.subject,
+            "Score": score
+        }
+
+        df.loc[len(df)] = new_row
+        df.to_csv(LEADERBOARD_FILE, index=False)
+
+        # ---------------- SHOW LEADERBOARD ---------------- #
+
+        st.subheader("🏆 Leaderboard")
+
+        leaderboard = df.sort_values(
+            by="Score",
+            ascending=False
+        )
+
+        st.dataframe(leaderboard)
+
+        # ---------------- PDF RESULT ---------------- #
+
+        if st.button("Download PDF Result"):
+
+            pdf = FPDF()
+            pdf.add_page()
+
+            pdf.set_font("Arial", size=16)
+
+            pdf.cell(200, 10, txt="Quiz Result", ln=True)
+
+            pdf.set_font("Arial", size=12)
+
+            pdf.cell(
+                200,
+                10,
+                txt=f"Name: {name}",
+                ln=True
+            )
+
+            pdf.cell(
+                200,
+                10,
+                txt=f"Subject: {st.session_state.subject}",
+                ln=True
+            )
+
+            pdf.cell(
+                200,
+                10,
+                txt=f"Score: {score}/{total}",
+                ln=True
+            )
+
+            pdf.output("result.pdf")
+
+            with open("result.pdf", "rb") as file:
+                st.download_button(
+                    label="📄 Download Result PDF",
+                    data=file,
+                    file_name="Quiz_Result.pdf",
+                    mime="application/pdf"
+                )
+
+        # ---------------- RESTART ---------------- #
+
+        if st.button("Restart Quiz"):
+
             st.session_state.started = False
             st.session_state.q_no = 0
             st.session_state.score = 0
             st.session_state.feedback = ""
+
             st.rerun()
+
+# ---------------- ADMIN PANEL ---------------- #
+
+st.sidebar.title("🔐 Admin Panel")
+
+password = st.sidebar.text_input(
+    "Enter Admin Password",
+    type="password"
+)
+
+if password == "admin123":
+
+    st.sidebar.success("Admin Access Granted")
+
+    st.sidebar.subheader("📊 Quiz Records")
+
+    df = pd.read_csv(LEADERBOARD_FILE)
+
+    st.sidebar.dataframe(df)
+
+else:
+    st.sidebar.info("Enter password to access admin panel")
