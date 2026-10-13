@@ -182,139 +182,176 @@ def certificate(player, subject, score, total, date):
 
 # PREMIUM UI
 
-
-# PREMIUM LIGHT UI - LUCKY QUIZ PRO
+# LUCKY QUIZ PRO - OBSIDIAN GOLD LUXURY THEME
 
 st.markdown("""
 <style>
 :root {
-    --primary: #6D28D9;
-    --primary-light: #EDE9FE;
-    --background: #F8FAFC;
-    --surface: #FFFFFF;
-    --text: #111827;
-    --muted: #64748B;
-    --border: #E2E8F0;
+    --gold: #D9B66F;
+    --gold-light: #F3DEAC;
+    --dark: #101113;
+    --surface: #1B1D1F;
+    --emerald: #1F8065;
+    --text: #F5EBDD;
 }
 
 .stApp {
-    background: #F8FAFC;
-    color: #111827;
+    background:
+        radial-gradient(ellipse at 80% 0%,
+            #282318 0%, transparent 42%),
+        linear-gradient(145deg,#101113,#17191B);
+    color: #F5EBDD;
 }
 
 [data-testid="stSidebar"] {
-    background: #FFFFFF;
-    border-right: 1px solid #E2E8F0;
+    background: linear-gradient(180deg,#17191B,#101113);
+    border-right: 1px solid #55482D;
 }
 
-[data-testid="stSidebar"] * {
-    color: #1F2937;
+h1,h2,h3,h4 {
+    color: #F5EBDD !important;
+    letter-spacing: .3px;
 }
 
-h1, h2, h3, h4, p {
-    color: #111827;
+p, label {
+    color: #D7D1C4;
 }
 
 .hero {
-    padding: 38px;
-    border-radius: 22px;
-    background: linear-gradient(
-        120deg,
-        #6D28D9 0%,
-        #8B5CF6 65%,
-        #A78BFA 100%
-    );
-    margin-bottom: 25px;
-    box-shadow: 0 12px 30px rgba(109,40,217,.13);
+    padding: 45px 38px;
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at 85% 20%,
+            rgba(217,182,111,.14),transparent 45%),
+        linear-gradient(125deg,#1B1D1F,#26241E);
+    border: 1px solid #665331;
+    box-shadow: 0 18px 45px rgba(0,0,0,.28);
+    margin-bottom: 28px;
 }
 
 .hero h1 {
-    font-size: 2.6rem;
+    color: #F3DEAC !important;
+    font-size: 2.8rem;
     font-weight: 800;
-    color: white !important;
-    margin: 0;
+    letter-spacing: -.8px;
 }
 
 .hero p {
-    color: #F3E8FF !important;
-    font-size: 1.05rem;
-    margin-top: 10px;
+    color: #C8BDA8 !important;
+    font-size: 1.08rem;
 }
 
 .metric {
-    padding: 24px;
-    border-radius: 18px;
-    border: 1px solid #EDE9FE;
-    background: white;
-    box-shadow: 0 5px 18px rgba(15,23,42,.04);
-    color: #475569;
+    background: linear-gradient(145deg,#222326,#191B1D);
+    border: 1px solid #51462F;
+    border-radius: 20px;
+    padding: 25px;
+    color: #C8BDA8;
+    box-shadow: 0 12px 28px rgba(0,0,0,.15);
+    transition: transform .2s, border-color .2s;
+}
+
+.metric:hover {
+    transform: translateY(-4px);
+    border-color: #D9B66F;
 }
 
 .metric strong {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 2.1rem;
+    display: block;
+    margin-top: 12px;
+    color: #F3DEAC;
+    font-size: 2.2rem;
     font-weight: 800;
-    color: #6D28D9;
 }
 
 div.stButton > button[kind="primary"],
 div.stFormSubmitButton > button[kind="primary"] {
-    background: #6D28D9 !important;
-    color: white !important;
-    border: none;
+    background: linear-gradient(120deg,#D9B66F,#F3DEAC);
+    color: #171717 !important;
+    border: 1px solid #F3DEAC;
     border-radius: 12px;
-    font-weight: 700;
-    min-height: 45px;
-    transition: .2s ease;
+    font-weight: 800;
+    min-height: 48px;
+    box-shadow: 0 6px 22px rgba(217,182,111,.13);
+    transition: all .2s ease;
 }
 
 div.stButton > button[kind="primary"]:hover,
 div.stFormSubmitButton > button[kind="primary"]:hover {
-    background: #5B21B6 !important;
-    box-shadow: 0 5px 16px rgba(109,40,217,.25);
+    background: #F7E5B8;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(217,182,111,.22);
 }
 
 div.stButton > button:not([kind="primary"]) {
+    background: #252629;
+    color: #F3DEAC;
+    border: 1px solid #665331;
     border-radius: 12px;
-    border: 1px solid #DDD6FE;
+}
+
+div.stButton > button:not([kind="primary"]):hover {
+    border-color: #D9B66F;
+    color: #FFFFFF;
 }
 
 div[data-testid="stForm"] {
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 18px;
-    padding: 24px;
+    background: linear-gradient(145deg,#202123,#191B1D);
+    border: 1px solid #51462F;
+    border-radius: 20px;
+    padding: 25px;
 }
 
 div[data-testid="stMetric"] {
-    background: white;
-    border: 1px solid #EDE9FE;
+    background: #202123;
+    border: 1px solid #51462F;
     border-radius: 16px;
     padding: 18px;
 }
 
 div[data-testid="stMetricValue"] {
-    color: #6D28D9;
+    color: #F3DEAC;
 }
 
 div[data-testid="stProgress"] > div > div {
-    background-color: #7C3AED;
+    background: #D9B66F;
 }
 
 [data-testid="stDataFrame"] {
+    border: 1px solid #51462F;
     border-radius: 14px;
     overflow: hidden;
+}
+
+div[data-baseweb="input"] > div,
+div[data-baseweb="select"] > div {
+    background-color: #252629;
+    border-color: #665331;
+    color: #F5EBDD;
+}
+
+.stTabs [data-baseweb="tab"] {
+    color: #C8BDA8;
+}
+
+.stTabs [aria-selected="true"] {
+    color: #F3DEAC !important;
+    border-bottom-color: #D9B66F !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
 <div class="hero">
-    <h1>🎯 Lucky Quiz Pro</h1>
+    <p style="color:#D9B66F!important;
+              letter-spacing:3px;font-size:12px;
+              font-weight:700;">
+        ✦ THE ELITE ASSESSMENT EXPERIENCE
+    </p>
+    <h1>LUCKY QUIZ PRO</h1>
     <p>
-        A smarter way to learn, compete and achieve.
-        Your premium assessment experience starts here.
+        Where knowledge meets excellence.
+        Challenge yourself. Earn your distinction.
     </p>
 </div>
 """, unsafe_allow_html=True)
