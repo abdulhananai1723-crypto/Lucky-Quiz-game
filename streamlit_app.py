@@ -182,62 +182,129 @@ def certificate(player, subject, score, total, date):
 
 # PREMIUM UI
 
+
+# PREMIUM LIGHT UI - LUCKY QUIZ PRO
+
 st.markdown("""
 <style>
+:root {
+    --primary: #6D28D9;
+    --primary-light: #EDE9FE;
+    --background: #F8FAFC;
+    --surface: #FFFFFF;
+    --text: #111827;
+    --muted: #64748B;
+    --border: #E2E8F0;
+}
+
 .stApp {
-    background: linear-gradient(
-        135deg,
-        #080f20 0%,
-        #101c34 60%,
-        #0b1223 100%
-    );
-    color: #e2e8f0;
+    background: #F8FAFC;
+    color: #111827;
 }
 
 [data-testid="stSidebar"] {
-    background: #101a30;
+    background: #FFFFFF;
+    border-right: 1px solid #E2E8F0;
 }
 
-h1, h2, h3 {
-    color: #f8fafc !important;
+[data-testid="stSidebar"] * {
+    color: #1F2937;
+}
+
+h1, h2, h3, h4, p {
+    color: #111827;
 }
 
 .hero {
-    padding: 32px;
-    border: 1px solid #334155;
+    padding: 38px;
     border-radius: 22px;
-    background: linear-gradient(110deg,#172b51,#102038);
-    margin-bottom: 20px;
+    background: linear-gradient(
+        120deg,
+        #6D28D9 0%,
+        #8B5CF6 65%,
+        #A78BFA 100%
+    );
+    margin-bottom: 25px;
+    box-shadow: 0 12px 30px rgba(109,40,217,.13);
 }
 
 .hero h1 {
-    font-size: 2.5rem;
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: white !important;
     margin: 0;
-    color: #fff;
 }
 
 .hero p {
-    color: #a5c5e8;
+    color: #F3E8FF !important;
     font-size: 1.05rem;
-    margin: 8px 0 0;
+    margin-top: 10px;
 }
 
 .metric {
-    padding: 18px;
-    border-radius: 16px;
-    border: 1px solid #34445e;
-    background: #17243b;
+    padding: 24px;
+    border-radius: 18px;
+    border: 1px solid #EDE9FE;
+    background: white;
+    box-shadow: 0 5px 18px rgba(15,23,42,.04);
+    color: #475569;
 }
 
 .metric strong {
-    font-size: 1.8rem;
-    color: #7dd3fc;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #6D28D9;
 }
 
-div.stButton > button[kind="primary"] {
-    background: #0284c7;
-    color: white;
-    border-radius: 10px;
+div.stButton > button[kind="primary"],
+div.stFormSubmitButton > button[kind="primary"] {
+    background: #6D28D9 !important;
+    color: white !important;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    min-height: 45px;
+    transition: .2s ease;
+}
+
+div.stButton > button[kind="primary"]:hover,
+div.stFormSubmitButton > button[kind="primary"]:hover {
+    background: #5B21B6 !important;
+    box-shadow: 0 5px 16px rgba(109,40,217,.25);
+}
+
+div.stButton > button:not([kind="primary"]) {
+    border-radius: 12px;
+    border: 1px solid #DDD6FE;
+}
+
+div[data-testid="stForm"] {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 18px;
+    padding: 24px;
+}
+
+div[data-testid="stMetric"] {
+    background: white;
+    border: 1px solid #EDE9FE;
+    border-radius: 16px;
+    padding: 18px;
+}
+
+div[data-testid="stMetricValue"] {
+    color: #6D28D9;
+}
+
+div[data-testid="stProgress"] > div > div {
+    background-color: #7C3AED;
+}
+
+[data-testid="stDataFrame"] {
+    border-radius: 14px;
+    overflow: hidden;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -246,12 +313,11 @@ st.markdown("""
 <div class="hero">
     <h1>🎯 Lucky Quiz Pro</h1>
     <p>
-        Premium Quiz & Assessment Platform
-        · Learn · Compete · Achieve
+        A smarter way to learn, compete and achieve.
+        Your premium assessment experience starts here.
     </p>
 </div>
 """, unsafe_allow_html=True)
-
 
 # SESSION STATE
 
